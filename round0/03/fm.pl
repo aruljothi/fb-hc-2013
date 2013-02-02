@@ -35,7 +35,7 @@ sub find_the_min() {
 			}
 		}
 		if($min == $k) {
-			my $index = ($n-1-$i) % $k;
+			my $index = ($n-1-$i) % $k+1;
 			my $min_val = $index ? $marr->[$index-1] : $min;
 			return $min_val;
 		}
