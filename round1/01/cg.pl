@@ -47,13 +47,14 @@ sub find_the_sum() {
 	for(my $i=1;($n-$i) >= $limit;$i++) {
 		my $val = shift(@$arf);
 		my $cmb = &comb($n-$i,$limit);
-		my $mod_by_val = int($modulo / $val)+1;
+		my $mod_by_val = ($modulo % $val) ? int($modulo/$val)+1 : int($modulo/$val);
 		my $div  = int($cmb / $mod_by_val);
 		my $rem  = $cmb % $mod_by_val;
 		my $mod  = (($val * $mod_by_val) % $modulo);
 		   $sum  = $sum + ((($mod * $div) + ($val * $rem)) % $modulo);
+		print "$val,$cmb,$sum\n";
 	}
-	return $sum;
+	return $sum % $modulo;
 }
 sub comb() {
 	my($n,$r) = @_;
@@ -61,7 +62,7 @@ sub comb() {
 	my $small = ($n-$r) > $r ? $r      : $n-$r;
 	my $n_by_nminr_fact = &fact($n,$big);
 	my $r_fact          = &fact($small);
-	my $c               = $n_by_nminr_fact/$r_fact;
+	my $c               = int($n_by_nminr_fact/$r_fact);
 	return $c;
 }
 sub fact() {
