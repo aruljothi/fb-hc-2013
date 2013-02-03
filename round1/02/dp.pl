@@ -18,7 +18,7 @@ sub find_the_diff_pos() {
 	my $fail_pos 		= keys(%$fail_pos_hrf);
 	my $pos			= $tot_pos - $fail_pos;
 #	print "$W,$H,$P,$Q,$N,$X,$Y,$a,$b,$c,$d,$tot_pos,$fail_pos,$pos\n";
-	my $f_hrf			= &get_fail_pixels($fail_pos_hrf);
+#	my $f_hrf			= &get_fail_pixels($fail_pos_hrf);
 #	&print_screen_with_dead_pixels($W,$H,$d_hrf,$f_hrf);
 	return $pos;
 }
