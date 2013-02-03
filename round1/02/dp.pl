@@ -14,12 +14,12 @@ sub find_the_diff_pos() {
 	my($W,$H,$P,$Q,$N,$X,$Y,$a,$b,$c,$d)	= @_;
 	my $d_hrf			= &find_dead_pixels($W,$H,$N,$X,$Y,$a,$b,$c,$d);
 	my $tot_pos		= (($W - $P) + 1) * (($H - $Q) + 1);
-	my $fail_pos_hrf	= &find_fail_pos($d_hrf,$P,$Q);
+	my $fail_pos_hrf	= &find_fail_pos($d_hrf,$W,$H,$P,$Q);
 	my $fail_pos 		= keys(%$fail_pos_hrf);
 	my $pos			= $tot_pos - $fail_pos;
-	print "$W,$H,$P,$Q,$N,$X,$Y,$a,$b,$c,$d,$tot_pos,$fail_pos,$pos\n";
+#	print "$W,$H,$P,$Q,$N,$X,$Y,$a,$b,$c,$d,$tot_pos,$fail_pos,$pos\n";
 	my $f_hrf			= &get_fail_pixels($fail_pos_hrf);
-	&print_screen_with_dead_pixels($W,$H,$d_hrf,$f_hrf);
+#	&print_screen_with_dead_pixels($W,$H,$d_hrf,$f_hrf);
 	return $pos;
 }
 sub find_dead_pixels() {
@@ -36,16 +36,18 @@ sub find_dead_pixels() {
 	return $d_hrf;
 }
 sub find_fail_pos() { #finds failure positions based on dead pixels
-	my($d_hrf,$P,$Q) = @_;
-	$P--; $Q--;
+	my($d_hrf,$W,$H,$P,$Q) = @_;
+	$W--;$H--;$P--; $Q--;
 	my $fail_pos_diag_hrf = {};
 	foreach my $x_d_pix (keys(%$d_hrf)) {
+		my $beg_x = (($x_d_pix - $P) < 0		) ? 0 			: ($x_d_pix - $P);
+		my $end_x = (($x_d_pix + $P) <= $W	) ? $x_d_pix	: ($W - $P);
 		foreach my $y_d_pix (keys(%{$d_hrf->{$x_d_pix}})) {
-			my $low_x = (($x_d_pix - $P) < 0) ? 0 : ($x_d_pix - $P);
-			my $low_y = (($y_d_pix - $Q) < 0) ? 0 : ($y_d_pix - $Q);
-			for(my $i=$low_x; $i <= $x_d_pix; $i++) {
+			my $beg_y = (($y_d_pix - $Q) < 0		) ? 0 			: ($y_d_pix - $Q);
+			my $end_y = (($y_d_pix + $Q) <= $H	) ? $y_d_pix	: ($H - $Q);
+			for(my $i=$beg_x; $i <= $end_x; $i++) {
 				my $k = $i+$P;
-				for(my $j=$low_y; $j <= $y_d_pix; $j++) {
+				for(my $j=$beg_y; $j <= $end_y; $j++) {
 					my $l = $j+$Q;
 					$fail_pos_diag_hrf->{$i.":".$j.":".$k.":".$l}++;
 				}
